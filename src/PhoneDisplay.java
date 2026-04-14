@@ -1,6 +1,7 @@
-public class PhoneDisplay implements Observer {
+public class PhoneDisplay implements Observer, DisplayElement {
 
     private Subject weatherStation;
+    private WeatherData weatherData;
 
     public PhoneDisplay(Subject weatherStation) {
         this.weatherStation = weatherStation;
@@ -17,8 +18,16 @@ public class PhoneDisplay implements Observer {
 
     @Override
     public void update(WeatherData weatherData) {
-        System.out.println("Phone -> " + weatherData.getCity() +
-                           " | Temp: " + weatherData.getTemperature() + "°C" +
-                           " | Humidity: " + weatherData.getHumidity() + "%");
+        this.weatherData = weatherData;
+        display();
+    }
+
+    @Override
+    public void display() {
+        if (weatherData != null) {
+            System.out.println("Phone -> " + weatherData.getCity() +
+                               " | Temp: " + weatherData.getTemperature() + "°C" +
+                               " | Humidity: " + weatherData.getHumidity() + "%");
+        }
     }
 }

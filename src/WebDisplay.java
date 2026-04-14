@@ -1,6 +1,7 @@
-public class WebDisplay implements Observer {
+public class WebDisplay implements Observer, DisplayElement {
 
     private Subject weatherStation;
+    private WeatherData weatherData;
 
     public WebDisplay(Subject weatherStation) {
         this.weatherStation = weatherStation;
@@ -17,9 +18,17 @@ public class WebDisplay implements Observer {
 
     @Override
     public void update(WeatherData weatherData) {
-        System.out.println("Web -> " + weatherData.getCity() +
-                           " | Temp: " + weatherData.getTemperature() + "°C" +
-                           " | Humidity: " + weatherData.getHumidity() + "%" +
-                           " | Pressure: " + weatherData.getPressure() + " hPa");
+        this.weatherData = weatherData;
+        display();
+    }
+
+    @Override
+    public void display() {
+        if (weatherData != null) {
+            System.out.println("Web -> " + weatherData.getCity() +
+                               " | Temp: " + weatherData.getTemperature() + "°C" +
+                               " | Humidity: " + weatherData.getHumidity() + "%" +
+                               " | Pressure: " + weatherData.getPressure() + " hPa");
+        }
     }
 }
