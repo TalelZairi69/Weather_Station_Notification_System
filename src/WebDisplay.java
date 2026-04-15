@@ -1,34 +1,45 @@
 public class WebDisplay implements Observer, DisplayElement {
 
-    private Subject weatherStation;
-    private WeatherData weatherData;
+    private float humidity;
+    private float pressure;
+    private float cloud;
+    private float uv;
+    private float windSpeed;
+    private float visibility;
+    private int isDay;
+    String localTime;
 
-    public WebDisplay(Subject weatherStation) {
-        this.weatherStation = weatherStation;
-        weatherStation.registerObserver(this);
-    }
+    private Subject weatherData;
 
-    public void unsubscribe() {
-        if (this.weatherStation != null) {
-            weatherStation.removeObserver(this);
-            System.out.println("---- WebDisplay unsubscribed from notifications ----");
-            this.weatherStation = null;
-        }
+    public WebDisplay(Subject weatherData) {
+        this.weatherData = weatherData;
+        weatherData.registerObserver(this);
     }
 
     @Override
-    public void update(WeatherData weatherData) {
-        this.weatherData = weatherData;
+    public void update(String city, String region, String country, String localTime,
+                       String condition, String windDir, float temperature, float feelsLike,
+                       float humidity, float pressure, float cloud, float uv,
+                       float windSpeed, float visibility, int isDay) {
+        this.humidity = humidity;
+        this.pressure= pressure;
+        this.cloud = cloud;
+        this.uv = uv;
+        this.windSpeed  =windSpeed ;
+        this.visibility=visibility ;
+        this.isDay=isDay;
+        this.localTime=localTime;
         display();
     }
 
     @Override
     public void display() {
-        if (weatherData != null) {
-            System.out.println("Web -> " + weatherData.getCity() +
-                               " | Temp: " + weatherData.getTemperature() + "°C" +
-                               " | Humidity: " + weatherData.getHumidity() + "%" +
-                               " | Pressure: " + weatherData.getPressure() + " hPa");
-        }
+        System.out.println("\n=== Web Display ===");
+        System.out.println("Local Time: " + localTime + " | " + (isDay == 1 ? "Daytime" : "Nighttime"));
+        System.out.println("Wind: " + windSpeed + " kph");
+        System.out.println("Humidity: " + humidity + "% | Pressure: " + pressure + " hPa");
+        System.out.println("Cloud Cover: " + cloud + "% | UV Index: " + uv);
+        System.out.println("Visibility: " + visibility + " km");
+        System.out.println("===============================\n");
     }
 }

@@ -1,33 +1,37 @@
 public class PhoneDisplay implements Observer, DisplayElement {
 
-    private Subject weatherStation;
-    private WeatherData weatherData;
+    private String city;
+    private String country;
+    private float temperature;
+    private float feelsLike;
+    private float humidity;
 
-    public PhoneDisplay(Subject weatherStation) {
-        this.weatherStation = weatherStation;
-        weatherStation.registerObserver(this);
-    }
+    private Subject weatherData;
 
-    public void unsubscribe() {
-        if (this.weatherStation != null) {
-            weatherStation.removeObserver(this);
-            System.out.println("---- PhoneDisplay unsubscribed from notifications ----");
-            this.weatherStation = null;
-        }
+    public PhoneDisplay(Subject weatherData) {
+        this.weatherData = weatherData;
+        weatherData.registerObserver(this);
     }
 
     @Override
-    public void update(WeatherData weatherData) {
-        this.weatherData = weatherData;
+    public void update(String city, String region, String country, String localTime,
+                       String condition, String windDir, float temperature, float feelsLike,
+                       float humidity, float pressure, float cloud, float uv,
+                       float windSpeed, float visibility, int isDay) {
+        this.city = city;
+        this.country = country;
+        this.temperature= temperature;
+        this.feelsLike= feelsLike;
+        this.humidity = humidity;
         display();
     }
 
     @Override
     public void display() {
-        if (weatherData != null) {
-            System.out.println("Phone -> " + weatherData.getCity() +
-                               " | Temp: " + weatherData.getTemperature() + "°C" +
-                               " | Humidity: " + weatherData.getHumidity() + "%");
-        }
+        System.out.println("\n=== Phone Display ===");
+        System.out.println("Location: " + city + ", " + ", " + country);
+        System.out.println("Temperature: " + temperature + "°C (Feels like " + feelsLike + "°C)");
+        System.out.println("Humidity: " + humidity + "%");
+        System.out.println("===============================\n");
     }
 }
