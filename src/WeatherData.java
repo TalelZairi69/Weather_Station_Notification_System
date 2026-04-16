@@ -18,7 +18,7 @@ public class WeatherData implements Subject {
     private float visibility;
     private int isDay;
 
-    private int numbersOfObservers;
+
 
 
 
@@ -28,14 +28,12 @@ public class WeatherData implements Subject {
 
     public void registerObserver (Observer o){
         observers.add(o);
-        numbersOfObservers++;
     }
 
     public void removeObserver (Observer o){
         int i = observers.indexOf(o);
         if (i >= 0) {
             observers.remove(i);
-            numbersOfObservers--;
         }
 
     }
@@ -74,7 +72,7 @@ public class WeatherData implements Subject {
     }
 
     public int getNumbersOfObservers(){
-        return numbersOfObservers;
+        return observers.size();
     }
 
 }
