@@ -19,33 +19,30 @@ public class AllDisplay implements Observer, DisplayElement{
     private float visibility;
     private int isDay;
 
-    private Subject weatherData;
+    private WeatherData weatherData;
 
-    public AllDisplay(Subject weatherData) {
+    public AllDisplay(WeatherData weatherData) {
         this.weatherData = weatherData;
         weatherData.registerObserver(this);
     }
 
     @Override
-    public void update(String city, String region, String country, String localTime,
-                       String condition, String windDir, float temperature, float feelsLike,
-                       float humidity, float pressure, float cloud, float uv,
-                       float windSpeed, float visibility, int isDay) {
-        this.city = city;
-        this.region = region;
-        this.country = country;
-        this.localTime = localTime;
-        this.condition = condition;
-        this.windDir = windDir;
-        this.temperature = temperature;
-        this.feelsLike = feelsLike;
-        this.humidity = humidity;
-        this.pressure = pressure;
-        this.cloud = cloud;
-        this.uv = uv;
-        this.windSpeed = windSpeed;
-        this.visibility = visibility;
-        this.isDay = isDay;
+    public void update() {
+        this.city = weatherData.getCity();
+        this.region = weatherData.getRegion();
+        this.country = weatherData.getCountry();
+        this.localTime = weatherData.getLocalTime();
+        this.condition = weatherData.getCondition();
+        this.windDir = weatherData.getWindDir();
+        this.temperature = weatherData.getTemperature();
+        this.feelsLike = weatherData.getFeelsLike();
+        this.humidity = weatherData.getHumidity();
+        this.pressure = weatherData.getPressure();
+        this.cloud = weatherData.getCloud();
+        this.uv = weatherData.getUv();
+        this.windSpeed = weatherData.getWindSpeed();
+        this.visibility = weatherData.getVisibility();
+        this.isDay = weatherData.getIsDay();
         display();
     }
 

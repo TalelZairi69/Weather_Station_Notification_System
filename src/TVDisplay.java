@@ -5,22 +5,19 @@ public class TVDisplay implements Observer, DisplayElement {
     private float humidity;
     private float pressure;
 
-    private Subject weatherData;
+    private WeatherData weatherData;
 
-    public TVDisplay(Subject weatherData) {
+    public TVDisplay(WeatherData weatherData) {
         this.weatherData = weatherData;
         weatherData.registerObserver(this);
     }
 
     @Override
-    public void update(String city, String region, String country, String localTime,
-                       String condition, String windDir, float temperature, float feelsLike,
-                       float humidity, float pressure, float cloud, float uv,
-                       float windSpeed, float visibility, int isDay) {
-        this.localTime = localTime;
-        this.temperature= temperature;
-        this.humidity = humidity;
-        this.pressure = pressure;
+    public void update() {
+        this.localTime = weatherData.getLocalTime();
+        this.temperature = weatherData.getTemperature();
+        this.humidity = weatherData.getHumidity();
+        this.pressure = weatherData.getPressure();
         display();
     }
 

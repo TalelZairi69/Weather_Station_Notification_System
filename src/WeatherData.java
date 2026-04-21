@@ -41,8 +41,7 @@ public class WeatherData implements Subject {
     public void notifyObservers(){
         for(int i = 0; i < observers.size(); i++){
             Observer observer = (Observer) observers.get(i);
-            observer.update(city, region, country, localTime, condition, windDir,
-                            temperature, feelsLike, humidity, pressure, cloud, uv, windSpeed, visibility, isDay);
+            observer.update();
         }
     }
 
@@ -75,4 +74,63 @@ public class WeatherData implements Subject {
         return observers.size();
     }
 
+    public String getCity() {
+        return city;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getLocalTime() {
+        return localTime;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+
+    public String getWindDir() {
+        return windDir;
+    }
+
+    public float getTemperature() {
+        return temperature;
+    }
+
+    public float getFeelsLike() {
+        return feelsLike;
+    }
+
+    public float getHumidity() {
+        return humidity;
+    }
+
+    public float getPressure() {
+        return pressure;
+    }
+
+    public float getCloud() {
+        return cloud;
+    }
+
+    public float getUv() {
+        return uv;
+    }
+
+    public float getWindSpeed() {
+        return windSpeed;
+    }
+
+    public float getVisibility() {
+        return visibility;
+    }
+
+    public int getIsDay() {
+        return isDay;
+    }
 }

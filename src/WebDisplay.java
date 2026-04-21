@@ -9,26 +9,23 @@ public class WebDisplay implements Observer, DisplayElement {
     private int isDay;
     String localTime;
 
-    private Subject weatherData;
+    private WeatherData weatherData;
 
-    public WebDisplay(Subject weatherData) {
+    public WebDisplay(WeatherData weatherData) {
         this.weatherData = weatherData;
         weatherData.registerObserver(this);
     }
 
     @Override
-    public void update(String city, String region, String country, String localTime,
-                       String condition, String windDir, float temperature, float feelsLike,
-                       float humidity, float pressure, float cloud, float uv,
-                       float windSpeed, float visibility, int isDay) {
-        this.humidity = humidity;
-        this.pressure= pressure;
-        this.cloud = cloud;
-        this.uv = uv;
-        this.windSpeed  =windSpeed ;
-        this.visibility=visibility ;
-        this.isDay=isDay;
-        this.localTime=localTime;
+    public void update() {
+        this.humidity = weatherData.getHumidity();
+        this.pressure = weatherData.getPressure();
+        this.cloud = weatherData.getCloud();
+        this.uv = weatherData.getUv();
+        this.windSpeed = weatherData.getWindSpeed();
+        this.visibility = weatherData.getVisibility();
+        this.isDay = weatherData.getIsDay();
+        this.localTime = weatherData.getLocalTime();
         display();
     }
 

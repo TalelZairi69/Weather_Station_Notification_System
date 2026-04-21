@@ -6,23 +6,20 @@ public class PhoneDisplay implements Observer, DisplayElement {
     private float feelsLike;
     private float humidity;
 
-    private Subject weatherData;
+    private WeatherData weatherData;
 
-    public PhoneDisplay(Subject weatherData) {
+    public PhoneDisplay(WeatherData weatherData) {
         this.weatherData = weatherData;
         weatherData.registerObserver(this);
     }
 
     @Override
-    public void update(String city, String region, String country, String localTime,
-                       String condition, String windDir, float temperature, float feelsLike,
-                       float humidity, float pressure, float cloud, float uv,
-                       float windSpeed, float visibility, int isDay) {
-        this.city = city;
-        this.country = country;
-        this.temperature= temperature;
-        this.feelsLike= feelsLike;
-        this.humidity = humidity;
+    public void update() {
+        this.city = weatherData.getCity();
+        this.country = weatherData.getCountry();
+        this.temperature = weatherData.getTemperature();
+        this.feelsLike = weatherData.getFeelsLike();
+        this.humidity = weatherData.getHumidity();
         display();
     }
 
