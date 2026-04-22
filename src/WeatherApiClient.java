@@ -34,7 +34,7 @@ public class WeatherApiClient {
             parseWeather(response.toString());
 
         } catch (Exception e) {
-            System.err.println("Error fetching weather data: " + e.getMessage());
+            System.err.println("Error at WeatherApiClient.fetchWeatherData() ");
         }
     }
 
@@ -52,7 +52,7 @@ public class WeatherApiClient {
             weatherStation.updateData(city, localTime, condition, temperature, feelsLike, humidity, pressure);
 
         } catch (Exception e) {
-            System.err.println("Parsing failed: " + e.getMessage());
+            System.err.println("Error at WeatherApiClient.parseWeather()");
         }
     }
 
