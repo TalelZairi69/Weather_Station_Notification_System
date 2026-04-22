@@ -1,34 +1,20 @@
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
-        WeatherData weatherData = new WeatherData();
-        WeatherApiClient apiClient = new WeatherApiClient();
+    public static void main(String[] args) {
+        WeatherStation weatherStation = new WeatherStation();
 
-        PhoneDisplay phone = new PhoneDisplay(weatherData);
-        TVDisplay tv = new TVDisplay(weatherData);
-        WebDisplay web = new WebDisplay(weatherData);
+        TVDisplay tv = new TVDisplay(weatherStation);
+        PhoneDisplay phone = new PhoneDisplay(weatherStation);
 
-        System.out.println("\n *** All displays registered ***");
-        System.out.println("--- Number of Subscribers:(" + weatherData.getNumbersOfObservers() + ")---");
-        apiClient.fetchWeatherData(weatherData);
-        Thread.sleep(3000);
+        weatherStation.setStationOnline(true);
 
+        try {
+            System.out.println("... Waiting 5 seconds before shutting down ...");
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("Main thread was interrupted.");
+        }
 
-        weatherData.removeObserver(phone);
-        System.out.println("\n*** PhoneDisplay Unsubscribed ***");
-        System.out.println("--- Number of Subscribers:(" + weatherData.getNumbersOfObservers() + ")---");
-        apiClient.fetchWeatherData(weatherData);
-        Thread.sleep(3000);
-
-        weatherData.removeObserver(tv);
-        System.out.println("\n*** TVDisplay Unsubscribed ***");
-        System.out.println("--- Number of Subscribers:(" + weatherData.getNumbersOfObservers() + ")---");
-        apiClient.fetchWeatherData(weatherData);
-        Thread.sleep(3000);
-
-        weatherData.removeObserver(web);
-        weatherData.registerObserver(tv);
-        System.out.println("\n*** WebDisplay Unsubscribed & TVDisplay Subscribed ***");
-        System.out.println("--- Number of Subscribers:(" + weatherData.getNumbersOfObservers() + ")---");
-        apiClient.fetchWeatherData(weatherData);
+        weatherStation.setStationOnline(false);
     }
 }

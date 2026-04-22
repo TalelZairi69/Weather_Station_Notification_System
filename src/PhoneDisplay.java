@@ -1,34 +1,51 @@
-public class PhoneDisplay implements Observer, DisplayElement {
+public class PhoneDisplay implements Observer,DisplayElement {
 
     private String city;
-    private String country;
+    private String localTime;
+    private String condition;
     private float temperature;
-    private float feelsLike;
     private float humidity;
+    private float pressure;
 
-    private WeatherData weatherData;
+    Subject subject;
 
-    public PhoneDisplay(WeatherData weatherData) {
-        this.weatherData = weatherData;
-        weatherData.registerObserver(this);
+    public PhoneDisplay(Subject subject){
+        this.subject =subject;
+        subject.registerObserver(this);
     }
 
     @Override
-    public void update() {
-        this.city = weatherData.getCity();
-        this.country = weatherData.getCountry();
-        this.temperature = weatherData.getTemperature();
-        this.feelsLike = weatherData.getFeelsLike();
-        this.humidity = weatherData.getHumidity();
+    public void update(String city, String localTime, String condition, float temperature, float feelsLike, float humidity, float pressure) {
+        this.city=city;
+        this.localTime = localTime;
+        this.condition=condition;
+        this.temperature = temperature;
+        this.humidity = humidity;
+        this.pressure = pressure;
         display();
     }
 
     @Override
     public void display() {
-        System.out.println("\n=== Phone Display ===");
-        System.out.println("Location: " + city + ", " + ", " + country);
-        System.out.println("Temperature: " + temperature + "°C (Feels like " + feelsLike + "°C)");
-        System.out.println("Humidity: " + humidity + "%");
-        System.out.println("===============================\n");
+        System.out.printf(
+                "+------------------------------+%n" +
+                "|         Phone Display        |%n" +
+                "+------------------------------+%n" +
+                "|%22s        |%n"+                  //localtime
+                "| %-13s : %6s     |%n" +                 //city
+                "| %-13s : %6.2f %-4s  |%n" +           //temp
+                "| %-13s : %6s|%n" +                 //condition
+                "| %-13s : %6.2f %-4s  |%n" +            //humidity
+                "| %-13s : %6.2f %-4s |%n"+             //pressure
+                "+------------------------------+%n",
+                localTime,
+                "City", city,
+                "Temperature", temperature, "°C",
+                "Condition",condition,
+                "Humidity", humidity, "%",
+                "Pressure", pressure, "hPa"
+        );
     }
+
+
 }

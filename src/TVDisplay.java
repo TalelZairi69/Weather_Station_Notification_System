@@ -1,32 +1,38 @@
-public class TVDisplay implements Observer, DisplayElement {
+public class TVDisplay implements Observer,DisplayElement {
 
-    private String localTime;
     private float temperature;
     private float humidity;
     private float pressure;
+    Subject subject;
 
-    private WeatherData weatherData;
-
-    public TVDisplay(WeatherData weatherData) {
-        this.weatherData = weatherData;
-        weatherData.registerObserver(this);
+    public TVDisplay(Subject subject){
+        this.subject =subject;
+        subject.registerObserver(this);
     }
 
     @Override
-    public void update() {
-        this.localTime = weatherData.getLocalTime();
-        this.temperature = weatherData.getTemperature();
-        this.humidity = weatherData.getHumidity();
-        this.pressure = weatherData.getPressure();
+    public void update(String city, String localTime, String condition, float temperature, float feelsLike, float humidity, float pressure) {
+        this.temperature=temperature;
+        this.humidity=humidity;
+        this.pressure=pressure;
         display();
     }
 
     @Override
     public void display() {
-        System.out.println("\n=== TV Display ===");
-        System.out.println("Local Time: " + localTime + " | ");
-        System.out.println("Temperature: " + temperature + "°C");
-        System.out.println("Humidity: " + humidity + "% | Pressure: " + pressure + " hPa");
-        System.out.println("===============================\n");
+        System.out.printf(
+                "+------------------------------+%n" +
+                "|         TV Display           |%n" +
+                "+------------------------------+%n" +
+                "| %-13s : %6.2f %-4s  |%n" +
+                "| %-13s : %6.2f %-4s  |%n" +
+                "| %-13s : %6.2f %-4s |%n" +
+                "+------------------------------+%n",
+                "Temperature", temperature, "°C",
+                "Humidity", humidity, "%",
+                "Pressure", pressure, "hPa"
+        );
     }
+
+
 }
