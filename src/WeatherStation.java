@@ -7,25 +7,28 @@ public class WeatherStation implements Subject {
     private String localTime;
     private String condition;
     private float temperature;
-    private float feelsLike;
     private float humidity;
     private float pressure;
 
     private final ArrayList observers;
     private volatile boolean isOnline;
     private Thread pollingThread;
-    private final WeatherApiClient api;
+    private WeatherProvider weatherProvider;
 
     public WeatherStation() {
         observers = new ArrayList<>();
-        this.api = new WeatherApiClient(this);
+        this.weatherProvider = new WeatherApiClient(this);
         System.out.println("*** WeatherStation Initialized ***");
+    }
+
+    public void setWeatherProvider(WeatherProvider provider) {
+        this.weatherProvider = provider;
     }
 
     @Override
     public void registerObserver(Observer o) {
         observers.add(o);
-        System.out.println("*** Added: ("+o.getClass().getSimpleName()+") to the Observer ***");
+        System.out.println("*** Added: (" + o.getClass().getSimpleName() + ") to the Observer ***");
     }
 
     @Override
@@ -40,19 +43,18 @@ public class WeatherStation implements Subject {
 
     @Override
     public void notifyObserver() {
-        System.out.println("*** Notifying Observers ***");
+        System.out.println("/// Notifying Observers ///");
         for (Object o : observers) {
             Observer observer = (Observer) o;
-            observer.update(city, localTime,condition, temperature, feelsLike, humidity, pressure);
+            observer.update(city, localTime, condition, temperature, humidity, pressure);
         }
 
     }
 
-    public void updateData(String city, String localTime, String condition, float temperature, float feelsLike, float humidity, float pressure) {
+    public void updateData(String city, String localTime, String condition, float temperature, float humidity, float pressure) {
         if (this.temperature != temperature ||
             this.humidity != humidity ||
             this.pressure != pressure ||
-            this.feelsLike != feelsLike ||
             !Objects.equals(this.condition, condition)) {
 
 
@@ -60,12 +62,11 @@ public class WeatherStation implements Subject {
             this.condition = condition;
             this.temperature = temperature;
             this.localTime = localTime;
-            this.feelsLike = feelsLike;
             this.humidity = humidity;
             this.pressure = pressure;
-            System.out.println("*** Updating Weather Data ***");
+            System.out.println("/// Updating Weather Data ///");
             notifyObserver();
-        }else {
+        } else {
             System.out.println("*** No Change to the weather ***");
         }
     }
@@ -75,9 +76,9 @@ public class WeatherStation implements Subject {
             this.isOnline = true;
             pollingThread = new Thread(() -> {
                 while (isOnline) {
-                    api.fetchWeatherData();
+                    weatherProvider.fetchData();
                     try {
-                        Thread.sleep(10000);
+                        Thread.sleep(3000);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         break;
@@ -98,5 +99,4 @@ public class WeatherStation implements Subject {
     }
 
 
-
-    }
+}

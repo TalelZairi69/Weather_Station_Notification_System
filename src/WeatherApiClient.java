@@ -5,7 +5,7 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WeatherApiClient {
+public class WeatherApiClient implements WeatherProvider {
     WeatherStation weatherStation;
 
     private final String API_KEY = "f2533a22c87b46fe8f5153605262303";
@@ -16,7 +16,7 @@ public class WeatherApiClient {
 
     }
 
-    public void fetchWeatherData() {
+    public void fetchData() {
         try {
             String urlString = "http://api.weatherapi.com/v1/current.json?key=" + API_KEY + "&q=" + CITY;
             URL url = new URL(urlString);
@@ -45,11 +45,10 @@ public class WeatherApiClient {
             String condition = extractString(json, "\"condition\":\\{\"text\":\"([^\"]+)\"");
 
             float temperature = extractFloat(json, "\"temp_c\":([\\d.-]+)");
-            float feelsLike = extractFloat(json, "\"feelslike_c\":([\\d.-]+)");
             float humidity = extractFloat(json, "\"humidity\":([\\d.]+)");
             float pressure = extractFloat(json, "\"pressure_mb\":([\\d.]+)");
 
-            weatherStation.updateData(city, localTime, condition, temperature, feelsLike, humidity, pressure);
+            weatherStation.updateData(city, localTime, condition, temperature, humidity, pressure);
 
         } catch (Exception e) {
             System.err.println("Error at WeatherApiClient.parseWeather()");
