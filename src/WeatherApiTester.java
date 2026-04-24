@@ -18,7 +18,7 @@ public class WeatherApiTester implements WeatherProvider {
         paresData();
     }
 
-    public void paresData() {
+    private void paresData() {
         float randomDiff = random.nextInt(6) + 2;
         if (isNewData()) {
             temperature += randomDiff;
@@ -30,16 +30,13 @@ public class WeatherApiTester implements WeatherProvider {
         String condition = "Cloudy";
         weatherStation.updateData(city, localTime, condition, temperature, humidity, pressure);
     }
-
+    // 0,1 is false. 2 is true
     private boolean isNewData() {
-        if (a == 1 || a == 2) {
+        if (a == 0 || a == 1) {
             a++;
             return false;
-        } else if (a > 3) {
-            a = 2;
-            return false;
         }
-        a++;
+        a = 0;
         return true;
     }
 

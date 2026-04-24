@@ -11,8 +11,8 @@ public class WeatherStation implements Subject {
     private float pressure;
 
     private final ArrayList observers;
-    private volatile boolean isOnline;
-    private Thread pollingThread;
+    private boolean isOnline;
+    private Thread onlineThread;
     private WeatherProvider weatherProvider;
 
     public WeatherStation() {
@@ -28,17 +28,16 @@ public class WeatherStation implements Subject {
     @Override
     public void registerObserver(Observer o) {
         observers.add(o);
-        System.out.println("*** Added: (" + o.getClass().getSimpleName() + ") to the Observer ***");
+        System.out.println("*** (" + o.getClass().getSimpleName() + ") subscribed to Weather Station ***");
     }
 
     @Override
     public void removeObserver(Observer o) {
-        System.out.println("*** (" + o.getClass().getSimpleName() + ") was removed from Observer ***");
+        System.out.println("*** (" + o.getClass().getSimpleName() + ") unsubscribe from Weather Station ***");
         int i = observers.indexOf(o);
         if (i >= 0) {
             observers.remove(i);
         }
-
     }
 
     @Override
@@ -57,7 +56,6 @@ public class WeatherStation implements Subject {
             this.pressure != pressure ||
             !Objects.equals(this.condition, condition)) {
 
-
             this.city = city;
             this.condition = condition;
             this.temperature = temperature;
@@ -74,7 +72,7 @@ public class WeatherStation implements Subject {
     public void setStationOnline(boolean online) {
         if (online) {
             this.isOnline = true;
-            pollingThread = new Thread(() -> {
+            onlineThread = new Thread(() -> {
                 while (isOnline) {
                     weatherProvider.fetchData();
                     try {
@@ -86,17 +84,15 @@ public class WeatherStation implements Subject {
                 }
             });
 
-            pollingThread.start();
+            onlineThread.start();
             System.out.println("*** Weather Station Is Online ***");
 
         } else {
             System.out.println("*** Weather Station Going Offline... ***");
             this.isOnline = false;
-            if (pollingThread != null) {
-                pollingThread.interrupt();
+            if (onlineThread != null) {
+                onlineThread.interrupt();
             }
         }
     }
-
-
 }

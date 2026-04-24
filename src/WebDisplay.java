@@ -31,6 +31,4 @@ public class WebDisplay implements Observer, DisplayElement {
                            "\nHumidity: " + humidity + "%, Pressure: " + pressure + " hPa");
         System.out.println("_________________________________________________\n");
     }
-
-
 }
