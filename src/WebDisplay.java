@@ -1,34 +1,29 @@
 public class WebDisplay implements Observer, DisplayElement {
 
-    private String city;
-    private String localTime;
-    private float temperature;
-    private float humidity;
-    private float pressure;
-
+    private WeatherRecord weatherRecord;
     Subject subject;
 
     public WebDisplay(Subject subject) {
         this.subject = subject;
-        subject.registerObserver(this);
+        subject.addObserver(this);
+    }
+
+    public void unsubscribe() {
+        subject.removeObserver(this);
     }
 
     @Override
-    public void update(String city, String localTime, String condition, float temperature, float humidity, float pressure) {
-        this.city = city;
-        this.localTime = localTime;
-        this.temperature = temperature;
-        this.humidity = humidity;
-        this.pressure = pressure;
+    public void update(WeatherRecord weatherRecord) {
+        this.weatherRecord = weatherRecord;
         display();
     }
 
     @Override
     public void display() {
         System.out.println("\n________________ Web Display ___________________");
-        System.out.println("City: " + city + ", LocalTime:(" + localTime + ")\n" +
-                           "Temperature: " + temperature + "°C" +
-                           "\nHumidity: " + humidity + "%, Pressure: " + pressure + " hPa");
+        System.out.println("City: " + weatherRecord.city() + ", LocalTime:(" + weatherRecord.localTime() + ")\n" +
+                           "Temperature: " + weatherRecord.temperature() + "°C" +
+                           "\nHumidity: " + weatherRecord.humidity() + "%, Pressure: " + weatherRecord.pressure() + " hPa");
         System.out.println("_________________________________________________\n");
     }
 }

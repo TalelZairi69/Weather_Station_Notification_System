@@ -7,18 +7,19 @@ public class WeatherApiTester implements WeatherProvider {
     private float humidity = 65;
     private float pressure = 1020;
 
-    WeatherStation weatherStation;
+    WeatherRecordUpdater weatherRecordUpdater;
     private final Random random = new Random();
 
-    public WeatherApiTester(WeatherStation weatherStation) {
-        this.weatherStation = weatherStation;
+    public void setProvider(WeatherRecordUpdater weatherRecordUpdater) {
+        this.weatherRecordUpdater = weatherRecordUpdater;
     }
 
     public void fetchData() {
-        paresData();
+        System.out.println("*** Fetching Data... ***");
+        extractData();
     }
 
-    private void paresData() {
+    private void extractData() {
         float randomDiff = random.nextInt(6) + 2;
         if (isNewData()) {
             temperature += randomDiff;
@@ -28,8 +29,9 @@ public class WeatherApiTester implements WeatherProvider {
         String city = "Istanbul";
         String localTime = "2026-04-23  15:55";
         String condition = "Cloudy";
-        weatherStation.updateData(city, localTime, condition, temperature, humidity, pressure);
+        weatherRecordUpdater.updateRecord(new WeatherRecord(city, localTime, condition, temperature, humidity, pressure));
     }
+
     // 0,1 is false. 2 is true
     private boolean isNewData() {
         if (a == 0 || a == 1) {

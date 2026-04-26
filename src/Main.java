@@ -2,20 +2,21 @@ public class Main {
     public static void main(String[] args) {
 
         WeatherStation weatherStation = new WeatherStation();
-        weatherStation.setWeatherProvider(new WeatherApiTester(weatherStation));
+        weatherStation.setWeatherProvider(new WeatherApiClient("Istanbul"));
+
         TVDisplay tv = new TVDisplay(weatherStation);
         PhoneDisplay phone = new PhoneDisplay(weatherStation);
         WebDisplay web = new WebDisplay(weatherStation);
-        weatherStation.setStationOnline(true);
+        weatherStation.start();
 
-        sleep(10000);
+        sleep(8000);
         weatherStation.removeObserver(web);
-        sleep(10000);
+        sleep(8000);
         weatherStation.removeObserver(phone);
-        sleep(10000);
-        weatherStation.registerObserver(web);
-        sleep(10000);
-        weatherStation.setStationOnline(false);
+        sleep(8000);
+        weatherStation.addObserver(web);
+        sleep(8000);
+        weatherStation.off();
     }
 
     public static void sleep(int sec) {

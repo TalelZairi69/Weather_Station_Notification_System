@@ -1,34 +1,31 @@
 import java.util.ArrayList;
-import java.util.Objects;
 
-public class WeatherStation implements Subject {
-
-    private String city;
-    private String localTime;
-    private String condition;
-    private float temperature;
-    private float humidity;
-    private float pressure;
+public class WeatherStation implements Subject, WeatherRecordUpdater {
 
     private final ArrayList observers;
     private boolean isOnline;
     private Thread onlineThread;
+
+    private WeatherRecord record;
     private WeatherProvider weatherProvider;
 
     public WeatherStation() {
-        observers = new ArrayList<>();
-        this.weatherProvider = new WeatherApiClient(this);
+        this.observers = new ArrayList<>();
         System.out.println("*** WeatherStation Initialized ***");
+        setWeatherProvider(new WeatherApiTester());
     }
 
     public void setWeatherProvider(WeatherProvider provider) {
         this.weatherProvider = provider;
+        this.weatherProvider.setProvider(this);
+        System.out.println("*** Weather Provider set to (" + provider.getClass().getSimpleName() + ").");
     }
 
     @Override
-    public void registerObserver(Observer o) {
+    public void addObserver(Observer o) {
         observers.add(o);
         System.out.println("*** (" + o.getClass().getSimpleName() + ") subscribed to Weather Station ***");
+        System.out.println("Total Number of Observers: " + observers.size());
     }
 
     @Override
@@ -41,51 +38,48 @@ public class WeatherStation implements Subject {
     }
 
     @Override
-    public void notifyObserver() {
+    public void notifyObservers() {
         System.out.println("/// Notifying Observers ///");
         for (Object o : observers) {
             Observer observer = (Observer) o;
-            observer.update(city, localTime, condition, temperature, humidity, pressure);
+            observer.update(record);
         }
-
     }
 
-    public void updateData(String city, String localTime, String condition, float temperature, float humidity, float pressure) {
-        if (this.temperature != temperature ||
-            this.humidity != humidity ||
-            this.pressure != pressure ||
-            !Objects.equals(this.condition, condition)) {
-
-            this.city = city;
-            this.condition = condition;
-            this.temperature = temperature;
-            this.localTime = localTime;
-            this.humidity = humidity;
-            this.pressure = pressure;
-            System.out.println("/// Updating Weather Data ///");
-            notifyObserver();
+    public void updateRecord(WeatherRecord newRecord) {
+        if (!newRecord.equals(record)) {
+            System.out.println("/// Updating Weather ///");
+            this.record = newRecord;
+            notifyObservers();
         } else {
             System.out.println("*** No Change to the weather ***");
         }
     }
 
-    public void setStationOnline(boolean online) {
-        if (online) {
-            this.isOnline = true;
-            onlineThread = new Thread(() -> {
-                while (isOnline) {
-                    weatherProvider.fetchData();
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-                }
-            });
+    private void setStationOnline(boolean online) {
 
-            onlineThread.start();
-            System.out.println("*** Weather Station Is Online ***");
+        if (online) {
+            if (!isOnline){
+                isOnline = true;
+                onlineThread = new Thread(() -> {
+                    System.out.println("creating new Thread");
+                    while (isOnline) {
+                        weatherProvider.fetchData();
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            break;
+                        }
+                    }
+                });
+
+                onlineThread.start();
+                System.out.println("*** Weather Station Is Online ***");
+            }else {
+                System.out.println("+*+*+*+* Station Is Already Online! +*+*+*++*+");
+            }
+
 
         } else {
             System.out.println("*** Weather Station Going Offline... ***");
@@ -95,4 +89,13 @@ public class WeatherStation implements Subject {
             }
         }
     }
+
+    public void start() {
+        setStationOnline(true);
+    }
+
+    public void off() {
+        setStationOnline(false);
+    }
+
 }

@@ -6,19 +6,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WeatherApiClient implements WeatherProvider {
-    WeatherStation weatherStation;
+
+    WeatherRecordUpdater weatherRecordUpdater;
 
     private final String API_KEY = "f2533a22c87b46fe8f5153605262303";
-    private final String CITY = "Istanbul";
+    private final String city;
 
-    public WeatherApiClient(WeatherStation weatherStation) {
-        this.weatherStation = weatherStation;
+    public WeatherApiClient(String city){
+        this.city =city;
+    }
 
+    public void setProvider(WeatherRecordUpdater weatherRecordUpdater) {
+        this.weatherRecordUpdater = weatherRecordUpdater;
     }
 
     public void fetchData() {
+        System.out.println("*** Fetching Data... ***");
         try {
-            String urlString = "http://api.weatherapi.com/v1/current.json?key=" + API_KEY + "&q=" + CITY;
+            String urlString = "http://api.weatherapi.com/v1/current.json?key=" + API_KEY + "&q=" + city;
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -31,14 +36,14 @@ public class WeatherApiClient implements WeatherProvider {
             }
             reader.close();
 
-            parseWeather(response.toString());
+            extractData(response.toString());
 
         } catch (Exception e) {
             System.err.println("Error at WeatherApiClient.fetchWeatherData() ");
         }
     }
 
-    private void parseWeather(String json) {
+    private void extractData(String json) {
         try {
             String city = extractString(json, "\"name\":\"([^\"]+)\"");
             String localTime = extractString(json, "\"localtime\":\"([^\"]+)\"");
@@ -48,11 +53,12 @@ public class WeatherApiClient implements WeatherProvider {
             float humidity = extractFloat(json, "\"humidity\":([\\d.]+)");
             float pressure = extractFloat(json, "\"pressure_mb\":([\\d.]+)");
 
-            weatherStation.updateData(city, localTime, condition, temperature, humidity, pressure);
+            weatherRecordUpdater.updateRecord(new WeatherRecord(city, localTime, condition, temperature, humidity, pressure));
 
         } catch (Exception e) {
             System.err.println("Error at WeatherApiClient.parseWeather()");
         }
+
     }
 
     private String extractString(String json, String regex) {

@@ -1,36 +1,23 @@
 public class PhoneDisplay implements Observer, DisplayElement {
 
-    private String city;
-    private String localTime;
-    private String condition;
-    private float temperature;
-    private float humidity;
-    private float pressure;
-
-    Subject subject;
+    private WeatherRecord weatherRecord;
 
     public PhoneDisplay(Subject subject) {
-        this.subject = subject;
-        subject.registerObserver(this);
+        subject.addObserver(this);
     }
 
     @Override
-    public void update(String city, String localTime, String condition, float temperature, float humidity, float pressure) {
-        this.city = city;
-        this.localTime = localTime;
-        this.condition = condition;
-        this.temperature = temperature;
-        this.humidity = humidity;
-        this.pressure = pressure;
+    public void update(WeatherRecord weatherRecord) {
+        this.weatherRecord = weatherRecord;
         display();
     }
 
     @Override
     public void display() {
         System.out.println("\n________________ Phone Display __________________");
-        System.out.println("City: " + city + ", LocalTime:(" + localTime + ")\n" +
-                           "Temperature: " + temperature + "°C, Condition: " + condition +
-                           "\nHumidity: " + humidity + "%, Pressure: " + pressure + " hPa");
+        System.out.println("City: " + weatherRecord.city() + ", LocalTime:(" + weatherRecord.localTime() + ")\n" +
+                           "Temperature: " + weatherRecord.temperature() + "°C, Condition: " + weatherRecord.condition() +
+                           "\nHumidity: " + weatherRecord.humidity() + "%, Pressure: " + weatherRecord.pressure() + " hPa");
         System.out.println("_________________________________________________\n");
     }
 
