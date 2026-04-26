@@ -2,7 +2,7 @@ public class Main {
     public static void main(String[] args) {
 
         WeatherStation weatherStation = new WeatherStation();
-        weatherStation.setWeatherProvider(new WeatherApiClient("Istanbul"));
+        //weatherStation.setWeatherProvider(new APIClient("Istanbul"));
 
         TVDisplay tv = new TVDisplay(weatherStation);
         PhoneDisplay phone = new PhoneDisplay(weatherStation);

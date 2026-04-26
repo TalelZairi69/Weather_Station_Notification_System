@@ -12,7 +12,7 @@ public class WeatherStation implements Subject, WeatherRecordUpdater {
     public WeatherStation() {
         this.observers = new ArrayList<>();
         System.out.println("*** WeatherStation Initialized ***");
-        setWeatherProvider(new WeatherApiTester());
+        setWeatherProvider(new APITester());
     }
 
     public void setWeatherProvider(WeatherProvider provider) {
@@ -25,7 +25,7 @@ public class WeatherStation implements Subject, WeatherRecordUpdater {
     public void addObserver(Observer o) {
         observers.add(o);
         System.out.println("*** (" + o.getClass().getSimpleName() + ") subscribed to Weather Station ***");
-        System.out.println("Total Number of Observers: " + observers.size());
+        //System.out.println("Total Number of Observers: " + observers.size());
     }
 
     @Override
@@ -62,7 +62,7 @@ public class WeatherStation implements Subject, WeatherRecordUpdater {
             if (!isOnline){
                 isOnline = true;
                 onlineThread = new Thread(() -> {
-                    System.out.println("creating new Thread");
+                    //System.out.println("creating new Thread");
                     while (isOnline) {
                         weatherProvider.fetchData();
                         try {

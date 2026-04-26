@@ -5,14 +5,14 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WeatherApiClient implements WeatherProvider {
+public class APIClient implements WeatherProvider {
 
     WeatherRecordUpdater weatherRecordUpdater;
 
     private final String API_KEY = "f2533a22c87b46fe8f5153605262303";
     private final String city;
 
-    public WeatherApiClient(String city){
+    public APIClient(String city){
         this.city =city;
     }
 

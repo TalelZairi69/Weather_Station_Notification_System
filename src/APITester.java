@@ -1,6 +1,6 @@
 import java.util.Random;
 
-public class WeatherApiTester implements WeatherProvider {
+public class APITester implements WeatherProvider {
 
     private int a = 0;
     private float temperature = 15;
