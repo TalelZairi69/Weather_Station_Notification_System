@@ -14,11 +14,11 @@ public class PhoneDisplay implements Observer, DisplayElement {
 
     @Override
     public void display() {
-        System.out.println("\n________________ Phone Display __________________");
+        System.out.println("================= Phone Display =================");
         System.out.println("City: " + weatherRecord.city() + ", LocalTime:(" + weatherRecord.localTime() + ")\n" +
                            "Temperature: " + weatherRecord.temperature() + "°C, Condition: " + weatherRecord.condition() +
                            "\nHumidity: " + weatherRecord.humidity() + "%, Pressure: " + weatherRecord.pressure() + " hPa");
-        System.out.println("_________________________________________________\n");
+        System.out.println("=================================================");
     }
 
 

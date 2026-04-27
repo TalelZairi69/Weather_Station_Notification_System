@@ -16,10 +16,6 @@ public class APITester implements WeatherProvider {
 
     public void fetchData() {
         System.out.println("*** Fetching Data... ***");
-        extractData();
-    }
-
-    private void extractData() {
         float randomDiff = random.nextInt(6) + 2;
         if (isNewData()) {
             temperature += randomDiff;

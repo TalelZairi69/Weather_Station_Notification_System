@@ -1,8 +1,8 @@
 public class Main {
     public static void main(String[] args) {
-
+        String city = "Istanbul";
         WeatherStation weatherStation = new WeatherStation();
-        //weatherStation.setWeatherProvider(new APIClient("Istanbul"));
+        //weatherStation.setWeatherProvider(new APIClient(city));
 
         TVDisplay tv = new TVDisplay(weatherStation);
         PhoneDisplay phone = new PhoneDisplay(weatherStation);

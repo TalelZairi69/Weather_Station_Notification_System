@@ -14,10 +14,10 @@ public class TVDisplay implements Observer, DisplayElement {
 
     @Override
     public void display() {
-        System.out.println("\n__________________ Tv Display ___________________");
+        System.out.println("================ Tv Display ====================");
         System.out.println("Temperature: " + weatherRecord.temperature() + "°C" +
                            "\nHumidity: " + weatherRecord.humidity() + "%, Pressure: " + weatherRecord.pressure() + " hPa");
-        System.out.println("_________________________________________________\n");
+        System.out.println("=================================================");
     }
 
 

@@ -1,8 +1,9 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class WeatherStation implements Subject, WeatherRecordUpdater {
 
-    private final ArrayList observers;
+    private final List<Observer> observers;
     private boolean isOnline;
     private Thread onlineThread;
 
@@ -34,14 +35,16 @@ public class WeatherStation implements Subject, WeatherRecordUpdater {
         int i = observers.indexOf(o);
         if (i >= 0) {
             observers.remove(i);
+        }else {
+            System.err.println("("+o.getClass().getSimpleName()+") is not in the list," +
+                               "\ntrying to remove already removed Subscriber");
         }
     }
 
     @Override
     public void notifyObservers() {
         System.out.println("/// Notifying Observers ///");
-        for (Object o : observers) {
-            Observer observer = (Observer) o;
+        for (Observer observer : observers){
             observer.update(record);
         }
     }

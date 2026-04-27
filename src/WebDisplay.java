@@ -8,7 +8,7 @@ public class WebDisplay implements Observer, DisplayElement {
         subject.addObserver(this);
     }
 
-    public void unsubscribe() {
+    public void unsubscribe(Subject subject) {
         subject.removeObserver(this);
     }
 
@@ -20,10 +20,10 @@ public class WebDisplay implements Observer, DisplayElement {
 
     @Override
     public void display() {
-        System.out.println("\n________________ Web Display ___________________");
+        System.out.println("=================== Web Display =================");
         System.out.println("City: " + weatherRecord.city() + ", LocalTime:(" + weatherRecord.localTime() + ")\n" +
                            "Temperature: " + weatherRecord.temperature() + "°C" +
                            "\nHumidity: " + weatherRecord.humidity() + "%, Pressure: " + weatherRecord.pressure() + " hPa");
-        System.out.println("_________________________________________________\n");
+        System.out.println("=================================================");
     }
 }
