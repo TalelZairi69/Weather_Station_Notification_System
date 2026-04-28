@@ -11,6 +11,7 @@ public class Main {
 
         sleep(8000);
         weatherStation.removeObserver(web);
+
         sleep(8000);
         weatherStation.removeObserver(phone);
         sleep(8000);
