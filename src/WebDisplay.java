@@ -1,29 +1,52 @@
-public class WebDisplay implements Observer, DisplayElement {
+public class WebDisplay implements Observer {
 
-    private WeatherRecord weatherRecord;
-    Subject subject;
+    private String condition;
+    private float temperature;
+    private float humidity;
+    private float pressure;
+
+    private int update;
 
     public WebDisplay(Subject subject) {
-        this.subject = subject;
-        subject.addObserver(this);
-    }
-
-    public void unsubscribe(Subject subject) {
-        subject.removeObserver(this);
+        subject.subscribeObserver(this).all();
     }
 
     @Override
-    public void update(WeatherRecord weatherRecord) {
-        this.weatherRecord = weatherRecord;
+    public void update(DataType dataType, Object data) {
+
+        switch (dataType) {
+            case CONDITION_TYPE:
+                this.condition = (String) data;
+                update = 1;
+                break;
+            case TEMPERATURE_TYPE:
+                this.temperature = (Float) data;
+                update = 2;
+                break;
+            case HUMIDITY_TYPE:
+                this.humidity = (Float) data;
+                update = 3;
+                break;
+            case PRESSURE_TYPE:
+                this.pressure = (Float) data;
+                update = 4;
+                break;
+        }
         display();
     }
 
-    @Override
+
     public void display() {
-        System.out.println("=================== Web Display =================");
-        System.out.println("City: " + weatherRecord.city() + ", LocalTime:(" + weatherRecord.localTime() + ")\n" +
-                           "Temperature: " + weatherRecord.temperature() + "°C" +
-                           "\nHumidity: " + weatherRecord.humidity() + "%, Pressure: " + weatherRecord.pressure() + " hPa");
-        System.out.println("=================================================");
+
+        if (update == 1) {
+            System.out.println("Web Display received notification -> Condition: " + condition);
+        } else if (update == 2) {
+            System.out.println("Web Display received notification -> Temperature: " + temperature);
+        } else if (update == 3) {
+            System.out.println("Web Display received notification -> Humidity: " + humidity);
+        } else if (update == 4) {
+            System.out.println("Web Display received notification -> Pressure: " + pressure);
+        }
+
     }
 }

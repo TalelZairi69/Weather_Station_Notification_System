@@ -1,3 +1,3 @@
 public interface Observer {
-    void update(WeatherRecord data);
+    void update(DataType dataType, Object data);
 }

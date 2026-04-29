@@ -1,30 +1,31 @@
 public class Main {
     public static void main(String[] args) {
-        String city = "Istanbul";
-        WeatherStation weatherStation = new WeatherStation();
-        //weatherStation.setWeatherProvider(new APIClient(city));
+        WeatherDataSource dataSource = new APITester();
+        WeatherStation weatherStation = new WeatherStation(dataSource);
+        //weatherStation.setDataSource(new APIClient());
 
-        TVDisplay tv = new TVDisplay(weatherStation);
-        PhoneDisplay phone = new PhoneDisplay(weatherStation);
-        WebDisplay web = new WebDisplay(weatherStation);
-        weatherStation.start();
 
-        sleep(8000);
-        weatherStation.removeObserver(web);
-        sleep(8000);
-        weatherStation.removeObserver(phone);
-        sleep(8000);
-        weatherStation.addObserver(web);
-        sleep(8000);
+        WebDisplay webDisplay = new WebDisplay(weatherStation);
+        PhoneDisplay phoneDisplay = new PhoneDisplay(weatherStation);
+
+        weatherStation.start(5000);
+        sleep(6000);
+        weatherStation.unsubscribeObserver(webDisplay).temperature();
+        sleep(6000);
+        weatherStation.unsubscribeObserver(phoneDisplay).humidity();
+        sleep(6000);
+        weatherStation.subscribeObserver(webDisplay).temperature();
+        sleep(60000);
         weatherStation.off();
-    }
 
-    public static void sleep(int sec) {
+    }
+    public static void sleep(int milSec) {
         try {
-            Thread.sleep(sec);
+            Thread.sleep(milSec);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             System.err.println("*** error sleep ***");
         }
     }
+
 }

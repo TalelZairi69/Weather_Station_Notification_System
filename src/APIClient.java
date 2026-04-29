@@ -5,60 +5,50 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class APIClient implements WeatherProvider {
+public class APIClient implements WeatherDataSource {
 
-    WeatherRecordUpdater weatherRecordUpdater;
+    private String condition;
+    private float temperature;
+    private float humidity;
+    private float pressure;
 
     private final String API_KEY = "f2533a22c87b46fe8f5153605262303";
-    private final String city;
+    private final String city = "Istanbul";
 
-    public APIClient(String city){
-        this.city =city;
-    }
-
-    public void setProvider(WeatherRecordUpdater weatherRecordUpdater) {
-        this.weatherRecordUpdater = weatherRecordUpdater;
-    }
-
+    @Override
     public void fetchData() {
-        System.out.println("*** Fetching Data... ***");
+        HttpURLConnection conn = null;
         try {
             String urlString = "http://api.weatherapi.com/v1/current.json?key=" + API_KEY + "&q=" + city;
             URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                extractData(response.toString());
             }
-            reader.close();
 
-            extractData(response.toString());
-
-        } catch (Exception e) {
-            System.err.println("Error at WeatherApiClient.fetchWeatherData() ");
+        } catch (Exception ignored) {
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
         }
     }
 
     private void extractData(String json) {
         try {
-            String city = extractString(json, "\"name\":\"([^\"]+)\"");
-            String localTime = extractString(json, "\"localtime\":\"([^\"]+)\"");
-            String condition = extractString(json, "\"condition\":\\{\"text\":\"([^\"]+)\"");
-
-            float temperature = extractFloat(json, "\"temp_c\":([\\d.-]+)");
-            float humidity = extractFloat(json, "\"humidity\":([\\d.]+)");
-            float pressure = extractFloat(json, "\"pressure_mb\":([\\d.]+)");
-
-            weatherRecordUpdater.updateRecord(new WeatherRecord(city, localTime, condition, temperature, humidity, pressure));
-
-        } catch (Exception e) {
-            System.err.println("Error at WeatherApiClient.parseWeather()");
+            this.condition = extractString(json, "\"condition\":\\{\"text\":\"([^\"]+)\"");
+            this.temperature = extractFloat(json, "\"temp_c\":([\\d.-]+)");
+            this.humidity = extractFloat(json, "\"humidity\":([\\d.]+)");
+            this.pressure = extractFloat(json, "\"pressure_mb\":([\\d.]+)");
+        } catch (Exception ignored) {
         }
-
     }
 
     private String extractString(String json, String regex) {
@@ -71,5 +61,23 @@ public class APIClient implements WeatherProvider {
         return matcher.find() ? Float.parseFloat(matcher.group(1)) : 0.0f;
     }
 
+    @Override
+    public String condition() {
+        return condition;
+    }
 
+    @Override
+    public float temperature() {
+        return temperature;
+    }
+
+    @Override
+    public float humidity() {
+        return humidity;
+    }
+
+    @Override
+    public float pressure() {
+        return pressure;
+    }
 }

@@ -1,104 +1,125 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class WeatherStation implements Subject, WeatherRecordUpdater {
+public class WeatherStation implements Subject {
 
-    private final List<Observer> observers;
-    private boolean isOnline;
+    private WeatherDataSource dataSource;
+    public final Map<DataType, List<Observer>> mapObservers = new HashMap<>();
+
+    private String condition;
+    private float temperature;
+    private float humidity;
+    private float pressure;
+
+    private volatile boolean isOnline;
     private Thread onlineThread;
 
-    private WeatherRecord record;
-    private WeatherProvider weatherProvider;
-
-    public WeatherStation() {
-        this.observers = new ArrayList<>();
-        System.out.println("*** WeatherStation Initialized ***");
-        setWeatherProvider(new APITester());
+    public WeatherStation(WeatherDataSource dataSource) {
+        System.out.println("weather station initialized");
+        this.dataSource = dataSource;
+        mapObservers.put(DataType.CONDITION_TYPE, new ArrayList<>());
+        mapObservers.put(DataType.TEMPERATURE_TYPE, new ArrayList<>());
+        mapObservers.put(DataType.HUMIDITY_TYPE, new ArrayList<>());
+        mapObservers.put(DataType.PRESSURE_TYPE, new ArrayList<>());
     }
 
-    public void setWeatherProvider(WeatherProvider provider) {
-        this.weatherProvider = provider;
-        this.weatherProvider.setProvider(this);
-        System.out.println("*** Weather Provider set to (" + provider.getClass().getSimpleName() + ").");
-    }
 
-    @Override
-    public void addObserver(Observer o) {
-        observers.add(o);
-        System.out.println("*** (" + o.getClass().getSimpleName() + ") subscribed to Weather Station ***");
-        //System.out.println("Total Number of Observers: " + observers.size());
+    public void setDataSource(WeatherDataSource newDataSource) {
+        this.dataSource = newDataSource;
     }
 
     @Override
-    public void removeObserver(Observer o) {
-        System.out.println("*** (" + o.getClass().getSimpleName() + ") unsubscribe from Weather Station ***");
-        int i = observers.indexOf(o);
-        if (i >= 0) {
-            observers.remove(i);
-        }else {
-            System.err.println("("+o.getClass().getSimpleName()+") is not in the list," +
-                               "\ntrying to remove already removed Subscriber");
-        }
+    public SubscribeHandler subscribeObserver(Observer observer) {
+        return new SubscribeHandler(this.mapObservers, observer, true);
     }
 
     @Override
-    public void notifyObservers() {
-        System.out.println("/// Notifying Observers ///");
-        for (Observer observer : observers){
-            observer.update(record);
+    public SubscribeHandler unsubscribeObserver(Observer observer) {
+        return new SubscribeHandler(this.mapObservers, observer, false);
+    }
+
+    @Override
+    public void notifyObservers(DataType dataType) {
+        Object data;        // Object data: non-primitive (reference) data type
+        switch (dataType) {
+            case CONDITION_TYPE:
+                data = condition;
+                break;
+            case TEMPERATURE_TYPE:
+                data = temperature;
+                break;
+            case HUMIDITY_TYPE:
+                data = humidity;
+                break;
+            case PRESSURE_TYPE:
+                data = pressure;
+                break;
+            default:
+                data = null;
+                break;
+        }
+
+        for (Observer observer : mapObservers.get(dataType)) {
+            observer.update(dataType, data);
         }
     }
 
-    public void updateRecord(WeatherRecord newRecord) {
-        if (!newRecord.equals(record)) {
-            System.out.println("/// Updating Weather ///");
-            this.record = newRecord;
-            notifyObservers();
-        } else {
-            System.out.println("*** No Change to the weather ***");
+    private void DataChecker() {
+        if (!Objects.equals(condition, dataSource.condition())) {
+            this.condition = dataSource.condition();
+            notifyObservers(DataType.CONDITION_TYPE);
+        }
+        if (temperature != dataSource.temperature()) {
+            this.temperature = dataSource.temperature();
+            notifyObservers(DataType.TEMPERATURE_TYPE);
+        }
+        if (humidity != dataSource.humidity()) {
+            this.humidity = dataSource.humidity();
+            notifyObservers(DataType.HUMIDITY_TYPE);
+        }
+        if (pressure != dataSource.pressure()) {
+            this.pressure = dataSource.pressure();
+            notifyObservers(DataType.PRESSURE_TYPE);
         }
     }
 
-    private void setStationOnline(boolean online) {
+    private void caller() {
+        System.out.println("=====================================");
+        dataSource.fetchData();
+        DataChecker();
+    }
 
+    private void setStationOnline(boolean online, int RefreshRateInMilSec) {
         if (online) {
-            if (!isOnline){
+            if (!isOnline) {
                 isOnline = true;
                 onlineThread = new Thread(() -> {
-                    //System.out.println("creating new Thread");
-                    while (isOnline) {
-                        weatherProvider.fetchData();
+                    while (isOnline && !Thread.currentThread().isInterrupted()) {
+                        caller();
                         try {
-                            Thread.sleep(5000);
+                            Thread.sleep(RefreshRateInMilSec);
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                             break;
                         }
                     }
                 });
-
                 onlineThread.start();
                 System.out.println("*** Weather Station Is Online ***");
-            }else {
-                System.out.println("+*+*+*+* Station Is Already Online! +*+*+*++*+");
             }
-
-
         } else {
-            System.out.println("*** Weather Station Going Offline... ***");
             this.isOnline = false;
             if (onlineThread != null) {
                 onlineThread.interrupt();
             }
+            System.out.println("*** Weather Station Going Offline... ***");
         }
     }
 
-    public void start() {
-        setStationOnline(true);
+    public void start(int RefreshRateInMilSec) {
+        setStationOnline(true, RefreshRateInMilSec);
     }
 
     public void off() {
-        setStationOnline(false);
+        setStationOnline(false, 1000);
     }
-
 }

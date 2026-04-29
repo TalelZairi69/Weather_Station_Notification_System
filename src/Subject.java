@@ -1,5 +1,5 @@
 public interface Subject {
-    void addObserver(Observer o);
-    void removeObserver(Observer o);
-    void notifyObservers();
+    SubscribeHandler subscribeObserver(Observer o);
+    SubscribeHandler unsubscribeObserver(Observer o);
+    void notifyObservers(DataType dataType);
 }

@@ -1,0 +1,6 @@
+public enum DataType {
+    CONDITION_TYPE,
+    TEMPERATURE_TYPE,
+    HUMIDITY_TYPE,
+    PRESSURE_TYPE
+}
