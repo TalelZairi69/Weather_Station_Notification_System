@@ -4,7 +4,6 @@ public class Main {
         WeatherStation weatherStation = new WeatherStation(dataSource);
         //weatherStation.setDataSource(new APIClient());
 
-
         WebDisplay webDisplay = new WebDisplay(weatherStation);
         PhoneDisplay phoneDisplay = new PhoneDisplay(weatherStation);
 
