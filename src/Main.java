@@ -1,20 +1,21 @@
 public class Main {
     public static void main(String[] args) {
-        WeatherDataSource dataSource = new APITester();
+        WeatherAPI dataSource = new APIClient();
         WeatherStation weatherStation = new WeatherStation(dataSource);
-        //weatherStation.setDataSource(new APIClient());
+        weatherStation.setWeatherAPI(new APITester()); // this is for testing it has random values
 
-        WebDisplay webDisplay = new WebDisplay(weatherStation);
+
         PhoneDisplay phoneDisplay = new PhoneDisplay(weatherStation);
+        WebDisplay webDisplay = new WebDisplay(weatherStation);
 
-        weatherStation.start(5000);
+        weatherStation.on(5000); // the number is the refresh rate to fetch new data
         sleep(6000);
         weatherStation.unsubscribeObserver(webDisplay).temperature();
         sleep(6000);
         weatherStation.unsubscribeObserver(phoneDisplay).humidity();
         sleep(6000);
         weatherStation.subscribeObserver(webDisplay).temperature();
-        sleep(60000);
+        sleep(6000);
         weatherStation.off();
 
     }

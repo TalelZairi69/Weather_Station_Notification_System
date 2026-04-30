@@ -5,7 +5,7 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class APIClient implements WeatherDataSource {
+public class APIClient implements WeatherAPI {
 
     private String condition;
     private float temperature;

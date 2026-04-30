@@ -1,4 +1,4 @@
-public interface WeatherDataSource {
+public interface WeatherAPI {
     void fetchData();
     String condition();
     float temperature();

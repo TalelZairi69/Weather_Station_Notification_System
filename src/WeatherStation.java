@@ -2,9 +2,6 @@ import java.util.*;
 
 public class WeatherStation implements Subject {
 
-    private WeatherDataSource dataSource;
-    public final Map<DataType, List<Observer>> mapObservers = new HashMap<>();
-
     private String condition;
     private float temperature;
     private float humidity;
@@ -13,9 +10,11 @@ public class WeatherStation implements Subject {
     private volatile boolean isOnline;
     private Thread onlineThread;
 
-    public WeatherStation(WeatherDataSource dataSource) {
-        System.out.println("weather station initialized");
-        this.dataSource = dataSource;
+    private WeatherAPI weatherAPI;
+    public final Map<DataType, List<Observer>> mapObservers = new HashMap<>(); // each DataType is a key for each Observer list
+
+    public WeatherStation(WeatherAPI weatherAPI) {
+        this.weatherAPI = weatherAPI;
         mapObservers.put(DataType.CONDITION_TYPE, new ArrayList<>());
         mapObservers.put(DataType.TEMPERATURE_TYPE, new ArrayList<>());
         mapObservers.put(DataType.HUMIDITY_TYPE, new ArrayList<>());
@@ -23,8 +22,8 @@ public class WeatherStation implements Subject {
     }
 
 
-    public void setDataSource(WeatherDataSource newDataSource) {
-        this.dataSource = newDataSource;
+    public void setWeatherAPI(WeatherAPI newWeatherAPI) {
+        this.weatherAPI = newWeatherAPI;
     }
 
     @Override
@@ -37,9 +36,34 @@ public class WeatherStation implements Subject {
         return new SubscribeHandler(this.mapObservers, observer, false);
     }
 
+    private void caller() {
+        System.out.println("=====================================");
+        weatherAPI.fetchData();
+        dataChecker();
+    }
+
+    private void dataChecker() { // checks each dataType, if different will update internal instance variables
+        if (!Objects.equals(condition, weatherAPI.condition())) {
+            this.condition = weatherAPI.condition();
+            notifyObservers(DataType.CONDITION_TYPE);
+        }
+        if (temperature != weatherAPI.temperature()) {
+            this.temperature = weatherAPI.temperature();
+            notifyObservers(DataType.TEMPERATURE_TYPE);
+        }
+        if (humidity != weatherAPI.humidity()) {
+            this.humidity = weatherAPI.humidity();
+            notifyObservers(DataType.HUMIDITY_TYPE);
+        }
+        if (pressure != weatherAPI.pressure()) {
+            this.pressure = weatherAPI.pressure();
+            notifyObservers(DataType.PRESSURE_TYPE);
+        }
+    }
+
     @Override
-    public void notifyObservers(DataType dataType) {
-        Object data;        // Object data: non-primitive (reference) data type
+    public void notifyObservers(DataType dataType) { // notify a specific observer-list based on the dataType
+        Object data;
         switch (dataType) {
             case CONDITION_TYPE:
                 data = condition;
@@ -63,30 +87,6 @@ public class WeatherStation implements Subject {
         }
     }
 
-    private void DataChecker() {
-        if (!Objects.equals(condition, dataSource.condition())) {
-            this.condition = dataSource.condition();
-            notifyObservers(DataType.CONDITION_TYPE);
-        }
-        if (temperature != dataSource.temperature()) {
-            this.temperature = dataSource.temperature();
-            notifyObservers(DataType.TEMPERATURE_TYPE);
-        }
-        if (humidity != dataSource.humidity()) {
-            this.humidity = dataSource.humidity();
-            notifyObservers(DataType.HUMIDITY_TYPE);
-        }
-        if (pressure != dataSource.pressure()) {
-            this.pressure = dataSource.pressure();
-            notifyObservers(DataType.PRESSURE_TYPE);
-        }
-    }
-
-    private void caller() {
-        System.out.println("=====================================");
-        dataSource.fetchData();
-        DataChecker();
-    }
 
     private void setStationOnline(boolean online, int RefreshRateInMilSec) {
         if (online) {
@@ -115,7 +115,7 @@ public class WeatherStation implements Subject {
         }
     }
 
-    public void start(int RefreshRateInMilSec) {
+    public void on(int RefreshRateInMilSec) {
         setStationOnline(true, RefreshRateInMilSec);
     }
 

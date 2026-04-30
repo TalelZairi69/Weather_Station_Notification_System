@@ -5,7 +5,7 @@ public class WebDisplay implements Observer {
     private float humidity;
     private float pressure;
 
-    private int update;
+    private int updateType;
 
     public WebDisplay(Subject subject) {
         subject.subscribeObserver(this).all();
@@ -17,19 +17,19 @@ public class WebDisplay implements Observer {
         switch (dataType) {
             case CONDITION_TYPE:
                 this.condition = (String) data;
-                update = 1;
+                updateType = 1;
                 break;
             case TEMPERATURE_TYPE:
                 this.temperature = (Float) data;
-                update = 2;
+                updateType = 2;
                 break;
             case HUMIDITY_TYPE:
                 this.humidity = (Float) data;
-                update = 3;
+                updateType = 3;
                 break;
             case PRESSURE_TYPE:
                 this.pressure = (Float) data;
-                update = 4;
+                updateType = 4;
                 break;
         }
         display();
@@ -38,13 +38,13 @@ public class WebDisplay implements Observer {
 
     public void display() {
 
-        if (update == 1) {
+        if (updateType == 1) {
             System.out.println("Web Display received notification -> Condition: " + condition);
-        } else if (update == 2) {
+        } else if (updateType == 2) {
             System.out.println("Web Display received notification -> Temperature: " + temperature);
-        } else if (update == 3) {
+        } else if (updateType == 3) {
             System.out.println("Web Display received notification -> Humidity: " + humidity);
-        } else if (update == 4) {
+        } else if (updateType == 4) {
             System.out.println("Web Display received notification -> Pressure: " + pressure);
         }
 

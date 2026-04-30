@@ -1,6 +1,6 @@
 import java.util.Random;
 
-public class APITester implements WeatherDataSource {
+public class APITester implements WeatherAPI {
 
     private String condition;
 
@@ -14,11 +14,11 @@ public class APITester implements WeatherDataSource {
     @Override
     public void fetchData() {
         float randomDiff = random.nextInt(6) + 2;
-        if (isNewData()) {
+
             temperature += randomDiff;
             humidity += randomDiff;
             pressure += randomDiff;
-        }
+
         condition = "Cloudy";
     }
 
