@@ -1,8 +1,8 @@
 public class Main {
     public static void main(String[] args) {
-        WeatherAPI dataSource = new APIClient();
+        WeatherAPI dataSource = new APIClient(); // Real world weather data.
         WeatherStation weatherStation = new WeatherStation(dataSource);
-        weatherStation.setWeatherAPI(new APITester()); // this is for testing it has random values
+        weatherStation.setWeatherAPI(new APITester()); // Random weather data for testing.
 
         PhoneDisplay phoneDisplay = new PhoneDisplay(weatherStation);
         WebDisplay webDisplay = new WebDisplay(weatherStation);
@@ -14,7 +14,7 @@ public class Main {
         weatherStation.unsubscribeObserver(phoneDisplay).humidity();
         sleep(6000);
         weatherStation.subscribeObserver(webDisplay).temperature();
-        sleep(6000);
+        sleep(8000);
         weatherStation.off();
 
     }

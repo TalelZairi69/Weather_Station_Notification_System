@@ -40,12 +40,11 @@ public class WebDisplay implements Observer {
         if (updateType == 1) {
             System.out.println("Web Display received notification -> Condition: " + condition);
         } else if (updateType == 2) {
-            System.out.println("Web Display received notification -> Temperature: " + temperature);
+            System.out.println("Web Display received notification -> Temperature: " + temperature + " °C");
         } else if (updateType == 3) {
-            System.out.println("Web Display received notification -> Humidity: " + humidity);
+            System.out.println("Web Display received notification -> Humidity: " + humidity + "%");
         } else if (updateType == 4) {
-            System.out.println("Web Display received notification -> Pressure: " + pressure);
+            System.out.println("Web Display received notification -> Pressure: " + pressure + " hPa");
         }
-
     }
 }
