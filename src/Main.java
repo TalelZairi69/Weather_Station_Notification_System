@@ -4,7 +4,6 @@ public class Main {
         WeatherStation weatherStation = new WeatherStation(dataSource);
         weatherStation.setWeatherAPI(new APITester()); // this is for testing it has random values
 
-
         PhoneDisplay phoneDisplay = new PhoneDisplay(weatherStation);
         WebDisplay webDisplay = new WebDisplay(weatherStation);
 
@@ -19,12 +18,13 @@ public class Main {
         weatherStation.off();
 
     }
+
     public static void sleep(int milSec) {
         try {
             Thread.sleep(milSec);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            System.err.println("*** error sleep ***");
+            System.err.println("*** error sleep main ***");
         }
     }
 

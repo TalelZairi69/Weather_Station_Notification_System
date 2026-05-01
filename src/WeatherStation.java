@@ -21,7 +21,6 @@ public class WeatherStation implements Subject {
         mapObservers.put(DataType.PRESSURE_TYPE, new ArrayList<>());
     }
 
-
     public void setWeatherAPI(WeatherAPI newWeatherAPI) {
         this.weatherAPI = newWeatherAPI;
     }
@@ -86,7 +85,6 @@ public class WeatherStation implements Subject {
             observer.update(dataType, data);
         }
     }
-
 
     private void setStationOnline(boolean online, int RefreshRateInMilSec) {
         if (online) {

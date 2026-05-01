@@ -35,7 +35,6 @@ public class WebDisplay implements Observer {
         display();
     }
 
-
     public void display() {
 
         if (updateType == 1) {

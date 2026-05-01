@@ -33,7 +33,8 @@ public class APIClient implements WeatherAPI {
                 extractData(response.toString());
             }
 
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            System.err.println("Error at APIClient fetchData()");
         } finally {
             if (conn != null) {
                 conn.disconnect();
@@ -47,7 +48,8 @@ public class APIClient implements WeatherAPI {
             this.temperature = extractFloat(json, "\"temp_c\":([\\d.-]+)");
             this.humidity = extractFloat(json, "\"humidity\":([\\d.]+)");
             this.pressure = extractFloat(json, "\"pressure_mb\":([\\d.]+)");
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            System.err.println("Error at APIClient extractData()");
         }
     }
 

@@ -14,15 +14,15 @@ public class APITester implements WeatherAPI {
     @Override
     public void fetchData() {
         float randomDiff = random.nextInt(6) + 2;
-
+        if (isNewData()) {
             temperature += randomDiff;
             humidity += randomDiff;
             pressure += randomDiff;
-
+        }
         condition = "Cloudy";
     }
 
-    private boolean isNewData() {
+    private boolean isNewData() { // update ones, holt twice.
         if (a == 0 || a == 1) {
             a++;
             return false;
