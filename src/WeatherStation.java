@@ -11,7 +11,7 @@ public class WeatherStation implements Subject {
     private Thread onlineThread;
 
     private WeatherAPI weatherAPI;
-    public final Map<DataType, List<Observer>> mapObservers = new HashMap<>(); // each DataType is a key for each Observer list
+    private final Map<DataType, List<Observer>> mapObservers = new HashMap<>(); // each DataType is a key for each Observer list
 
     public WeatherStation(WeatherAPI weatherAPI) {
         this.weatherAPI = weatherAPI;
